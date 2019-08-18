@@ -1,4 +1,21 @@
-# eternity-reverse-vue
+# EternityReverse
+A simple Java decompiler written in js [WIP]
+
+# TODO
+- [x] Switch to webpack and maybe typescript
+- [ ] Classes
+  - [x] Magic Number
+  - [x] Minor/Major-version
+  - [ ] Constant pool
+  - [ ] Access flags
+  - [ ] Super class
+  - [ ] Interfaces
+- [ ] Methods
+  - [ ] Descriptors
+  - [ ] Access flags
+- [ ] Fields
+  - [ ] Access flags
+- [ ] Native Types
 
 ## Project setup
 ```
