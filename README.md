@@ -6,9 +6,10 @@ A simple Java decompiler written in js [WIP]
 - [ ] Classes
   - [x] Magic Number
   - [x] Minor/Major-version
-  - [ ] Constant pool
-  - [ ] Access flags
-  - [ ] Super class
+  - [x] Constant pool count
+  - [x] Constant pool
+  - [x] Access flags
+  - [x] Super class
   - [ ] Interfaces
 - [ ] Methods
   - [ ] Descriptors

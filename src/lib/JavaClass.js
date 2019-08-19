@@ -1,4 +1,5 @@
 import ByteUtil from "./ByteUtil";
+import CpInfo from "./cpinfo/CpInfo";
 
 const MAGIC_NUMBER = 0xCAFEBABE;
 
@@ -25,6 +26,19 @@ export default class JavaClass {
         if (!this.decompiled) {
             //decompile logic
             if (this.hasMagicNumber()) {
+                this.internals = {};
+                this.internals.magic = this.readMagicNumber();
+                this.internals.minor_version = this.byteUtil.readShort(4);
+                this.internals.major_version = this.byteUtil.readShort(6);
+                this.internals.constant_pool_count = this.byteUtil.readShort(8);
+                this.internals.constant_pool = this.readConstantPool();
+                let byteLength = 8;
+                this.internals.constant_pool.forEach(cpInfo => byteLength += cpInfo.byteLength);
+                this.internals.access_flags = this.byteUtil.readShort(byteLength);
+                this.internals.this_flags = this.byteUtil.readShort(byteLength + 2);
+                this.internals.super_class = this.byteUtil.readShort(byteLength + 4);
+                this.internals.interfaces_count = this.byteUtil.readShort(byteLength + 6);
+
                 this.decompiled = "Source Code!";
             } else {
                 throw "Not a valid Java-Class file!";
@@ -40,24 +54,18 @@ export default class JavaClass {
         return this.byteUtil.readInt32(0);
     }
 
-    readMinorVersion() {
-        return this.byteUtil.readShort(4);
-    }
-
-    readMajorVersion() {
-        return this.byteUtil.readShort(6);
-    }
-
-    readConstantPoolCount() {
-        return this.byteUtil.readShort(8);
-    }
-
     readConstantPool() {
-        const poolCount = this.readConstantPoolCount() - 1;
+        const poolCount = this.internals.constant_pool_count - 1;
+        const cpInfos = [];
+        let byte = 10;
         for (let i = 0; i < poolCount; i++) {
-            const byte = this.byteUtil.get(8 + i);
-            console.log(byte);
+            let cpInfo = new CpInfo(byte, this.byteUtil);
+            cpInfo = cpInfo.getCpInfoType();
+            cpInfos.push(cpInfo);
+            byte += cpInfo.byteLength;
         }
+
+        return cpInfos;
     }
 
     isMajorVersionSupported() {
